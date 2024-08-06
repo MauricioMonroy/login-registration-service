@@ -34,7 +34,8 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
     @Override
     public void guardarUsuario(UsuarioDto usuarioDto) {
         Usuario usuario = new Usuario();
-        usuario.setUsername(usuarioDto.getNombreUsuario() + " " + usuarioDto.getApellidoUsuario());
+        String nombreCompleto = usuarioDto.getNombreUsuario() + " " + usuarioDto.getApellidoUsuario();
+        usuario.setUsername(nombreCompleto.trim().replaceAll(" +", " "));
         usuario.setEmail(usuarioDto.getEmail());
         usuario.setPassword(passwordEncoder.encode(usuarioDto.getPassword()));
 
@@ -65,9 +66,9 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
     // Método que mapea un usuario a un UsuarioDto
     private UsuarioDto mapeoUsuarioDto(Usuario usuario) {
         UsuarioDto usuarioDto = new UsuarioDto();
-        String[] str = usuario.getUsername().split(" ");
-        usuarioDto.setNombreUsuario(str[0]);
-        usuarioDto.setApellidoUsuario(str[1]);
+        String[] str = usuario.getUsername().split(" ", 2);
+        usuarioDto.setNombreUsuario(str.length > 0 ? str[0] : "");
+        usuarioDto.setApellidoUsuario(str.length > 1 ? str[1] : "");
         usuarioDto.setEmail(usuario.getEmail());
         return usuarioDto;
     }

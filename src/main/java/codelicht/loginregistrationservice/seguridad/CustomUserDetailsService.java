@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+/**
+ * Clase que implementa la interfaz UserDetailsService de Spring Security.
+ */
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
     private final UsuarioRepositorio usuarioRepositorio;
@@ -21,6 +24,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         this.usuarioRepositorio = usuarioRepositorio;
     }
 
+    // Método que carga un usuario por su email
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Usuario usuario = usuarioRepositorio.findByEmail(email);
@@ -33,10 +37,10 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
     }
 
+    // Método que mapea los roles de un usuario a sus respectivas autoridades
     private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Rol> roles) {
-        Collection<? extends GrantedAuthority> mapRoles = roles.stream()
+        return roles.stream()
                 .map(rol -> new SimpleGrantedAuthority(rol.getNombre()))
                 .collect(Collectors.toList());
-        return mapRoles;
     }
 }

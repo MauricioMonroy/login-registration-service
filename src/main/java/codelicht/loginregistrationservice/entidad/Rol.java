@@ -6,7 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Clase que representa y contiene los atributos de la entidad Rol.
@@ -26,5 +28,19 @@ public class Rol {
     private String nombre;
 
     @ManyToMany(mappedBy = "roles")
-    private List<Usuario> usuarios;
+    private List<Usuario> usuarios = new ArrayList<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Rol rol = (Rol) o;
+        return Objects.equals(id, rol.id) &&
+                Objects.equals(nombre, rol.nombre);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, nombre);
+    }
 }

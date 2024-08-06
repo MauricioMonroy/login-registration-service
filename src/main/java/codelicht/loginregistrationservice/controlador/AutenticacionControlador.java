@@ -52,7 +52,7 @@ public class AutenticacionControlador {
                                    Model model) {
         Usuario usuarioExistente = iUsuarioServicio.buscarUsuarioPorEmail(usuarioDto.getEmail());
         if (usuarioExistente != null && usuarioExistente.getEmail() != null && !usuarioExistente.getEmail().isEmpty()) {
-            result.rejectValue("email", null, "Ya existe un usuario registrado con ese email");
+            result.rejectValue("email", "error.usuario", "Ya existe un usuario registrado con ese email");
         }
         if (result.hasErrors()) {
             model.addAttribute("usuario", usuarioDto);
