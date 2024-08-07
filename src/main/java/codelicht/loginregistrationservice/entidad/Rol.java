@@ -1,5 +1,6 @@
 package codelicht.loginregistrationservice.entidad;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,9 +23,11 @@ import java.util.Objects;
 public class Rol {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("id")
     private Long id;
 
     @Column(nullable = false, unique = true)
+    @JsonProperty("nombre")
     private String nombre;
 
     @ManyToMany(mappedBy = "roles")

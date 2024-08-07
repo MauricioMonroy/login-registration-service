@@ -3,7 +3,10 @@ package codelicht.loginregistrationservice.seguridad;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -30,21 +33,27 @@ public class SeguridadSpring {
         return new BCryptPasswordEncoder();
     }
 
+    // Método que gestiona la autenticación
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
     // Método que gestiona los permisos de acceso a las rutas
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.userDetailsService(userDetailsService)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/auth-api/registro/**").permitAll()
-                        .requestMatchers("/auth-api/index").permitAll()
                         .requestMatchers("/auth-api/usuarios/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
-                ).formLogin(form -> form
+                )
+                .formLogin(form -> form
                         .loginPage("/auth-api/login")
-                        .loginProcessingUrl("/auth-api/login")
-                        .defaultSuccessUrl("/auth-api/index", true)
                         .permitAll()
-                ).logout(logout -> logout
+                )
+                .rememberMe((Customizer.withDefaults()))
+                .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/auth-api/logout"))
                         .logoutSuccessUrl("/auth-api/login?logout")
                         .permitAll()
@@ -52,9 +61,9 @@ public class SeguridadSpring {
         return http.build();
     }
 
-    // Método que configura la autenticación
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
+
 }

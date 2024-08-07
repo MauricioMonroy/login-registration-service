@@ -33,6 +33,10 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
     // Método que guarda un usuario en la base de datos
     @Override
     public void guardarUsuario(UsuarioDto usuarioDto) {
+        // Verificar si el usuario ya existe
+        if (usuarioRepositorio.findByEmail(usuarioDto.getEmail()) != null) {
+            throw new IllegalArgumentException("Ya existe un usuario registrado con ese email");
+        }
         Usuario usuario = new Usuario();
         String nombreCompleto = usuarioDto.getNombreUsuario() + " " + usuarioDto.getApellidoUsuario();
         usuario.setUsername(nombreCompleto.trim().replaceAll(" +", " "));

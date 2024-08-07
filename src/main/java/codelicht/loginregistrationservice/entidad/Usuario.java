@@ -1,5 +1,6 @@
 package codelicht.loginregistrationservice.entidad;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,15 +29,19 @@ public class Usuario implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("id")
     private Long id;
 
     @Column(nullable = false, unique = true)
+    @JsonProperty("username")
     private String username;
 
     @Column(nullable = false, unique = true)
+    @JsonProperty("email")
     private String email;
 
     @Column(nullable = false)
+    @JsonProperty("password")
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)
