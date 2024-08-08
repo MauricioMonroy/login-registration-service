@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,9 +14,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-/**
- * Clase que configura la seguridad de la aplicación.
- */
 @Configuration
 @EnableWebSecurity
 public class SeguridadSpring {
@@ -27,35 +23,32 @@ public class SeguridadSpring {
         this.userDetailsService = userDetailsService;
     }
 
-    // Método que encripta la contraseña
     @Bean
     public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // Método que gestiona la autenticación
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    // Método que gestiona los permisos de acceso a las rutas
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.userDetailsService(userDetailsService)
+        http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/auth-api/registro/**").permitAll()
-                        .requestMatchers("/auth-api/usuarios/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
+                        .requestMatchers("/registro/**").permitAll()
+                        .requestMatchers("/index").permitAll()
+                        .requestMatchers("/usuarios/**").hasRole("ADMIN")
                 )
                 .formLogin(form -> form
-                        .loginPage("/auth-api/login")
+                        .loginPage("/login")
+                        .loginProcessingUrl("/login")
+                        .defaultSuccessUrl("/usuarios")
                         .permitAll()
                 )
-                .rememberMe((Customizer.withDefaults()))
                 .logout(logout -> logout
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/auth-api/logout"))
-                        .logoutSuccessUrl("/auth-api/login?logout")
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                         .permitAll()
                 );
         return http.build();
@@ -65,5 +58,4 @@ public class SeguridadSpring {
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
-
 }

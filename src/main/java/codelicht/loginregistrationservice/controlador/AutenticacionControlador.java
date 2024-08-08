@@ -2,54 +2,38 @@ package codelicht.loginregistrationservice.controlador;
 
 import codelicht.loginregistrationservice.modelodto.UsuarioDto;
 import codelicht.loginregistrationservice.servicio.IUsuarioServicio;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
 /**
  * Controlador que maneja las peticiones relacionadas con la autenticación.
  */
-@RestController
-@RequestMapping("/auth-api")
+@Controller
 public class AutenticacionControlador {
 
     private final IUsuarioServicio iUsuarioServicio;
-    private final AuthenticationManager authenticationManager;
 
     // Inyección de dependencias por constructor
-    public AutenticacionControlador(IUsuarioServicio iUsuarioServicio, AuthenticationManager authenticationManager) {
+    public AutenticacionControlador(IUsuarioServicio iUsuarioServicio) {
         this.iUsuarioServicio = iUsuarioServicio;
-        this.authenticationManager = authenticationManager;
     }
 
     // Método que muestra la página de inicio
-    @GetMapping("/")
-    public String inicio() {
+    @GetMapping("/index")
+    public String home() {
         return "index";
     }
 
-    // Método para manejar la petición de inicio de sesión
-    @PostMapping("/login")
-    public String login(@RequestParam String email, @RequestParam String password, HttpServletRequest request) {
-        try {
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(email, password);
-            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            Authentication authentication = authenticationManager.authenticate(authToken);
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            return "Inicio de sesión exitoso";
-        } catch (Exception e) {
-            return "Error en el inicio de sesión: " + e.getMessage();
-        }
+    @GetMapping("/login")
+    public String login() {
+        return "login";
     }
 
     // Método que muestra el formulario de registro
@@ -58,7 +42,7 @@ public class AutenticacionControlador {
         // Se crea un objeto de tipo UsuarioDto
         UsuarioDto usuario = new UsuarioDto();
         model.addAttribute("usuario", usuario);
-        return "registrar";
+        return "registro";
     }
 
     // Método que guarda un usuario en la base de datos
@@ -74,7 +58,7 @@ public class AutenticacionControlador {
 
         if (result.hasErrors()) {
             model.addAttribute("usuario", usuarioDto);
-            return "registrar";
+            return "/registro";
         }
 
         return "redirect:/registro?success";
@@ -82,7 +66,7 @@ public class AutenticacionControlador {
 
     // Método que muestra la lista de usuarios
     @GetMapping("/usuarios")
-    public String mostrarUsuarios(Model model) {
+    public String usuarios(Model model) {
         List<UsuarioDto> usuarios = iUsuarioServicio.buscarTodosLosUsuarios();
         model.addAttribute("usuarios", usuarios);
         return "usuarios";
