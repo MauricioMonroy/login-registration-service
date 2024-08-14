@@ -9,9 +9,15 @@ import codelicht.loginregistrationservice.repositorio.UserRepositorio;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+/**
+ * Clase para crear el superadministrador en la base de datos
+ * Implementa ApplicationListener para ser ejecutado al iniciar la aplicación
+ */
+@Component
 public class AdminSeeder implements ApplicationListener<ContextRefreshedEvent> {
 
     private final RoleRepositorio roleRepositorio;
