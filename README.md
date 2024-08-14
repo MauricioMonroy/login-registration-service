@@ -93,7 +93,7 @@ La API REST estará disponible en `http://localhost:8080`, o en el puerto que ha
 #### Código: `401 Unauthorized` si las credenciales son inválidas.
 
 ## Perfil de Usuario
-- URL: `/user/perfil`
+- URL: `/user/profile`
 - Método: `GET`
 - Descripción: Obtiene la información del perfil del usuario autenticado (recurso protegido).
 - Headers:
