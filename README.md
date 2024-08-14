@@ -25,9 +25,9 @@ En el desarrollo de esta API REST se utilizaron las siguientes herramientas y te
 
 Antes de empezar, asegúrate de tener instalado:
 
-- JDK 21.0.2 o superior
-- Maven 3.9.7 o superior
-- MySQL
+- JDK 11 o superior
+- Maven 3.8 o superior
+- MySQL o una base de datos compatible
 
 ### Paso 1: Clonar el Repositorio
 
