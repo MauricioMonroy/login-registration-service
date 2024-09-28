@@ -32,7 +32,7 @@ Antes de empezar, asegúrate de tener instalado:
 ### Paso 1: Clonar el Repositorio
 
 ```bash
-git clone https://github.com/tu-usuario/registro-login-api.git
+git clone https://github.com/MauricioMonroy/registro-login-api.git
 cd registro-login-api
 ```
 
